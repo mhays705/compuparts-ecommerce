@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.inventorymanager.backend.repository.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
@@ -37,6 +39,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<UserResponse> getAllUsers() throws NoUsersFoundException {
 		List<User> users = userRepository.findAll().
 				stream().toList();
@@ -47,6 +50,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public UserResponse findUserById(Long id) throws UserNotFoundException {
 		Optional<User> user = userRepository.findById(id);
 		return mapper.toDTO(user.orElseThrow(() -> new UserNotFoundException("User with id: " + id + " not found.")));
@@ -54,27 +58,29 @@ public class UserServiceImpl implements UserService {
 
 
 	@Override
+	@Transactional(readOnly = true)
 	public UserResponse findUserByEmail(String email) throws UserNotFoundException {
 		return mapper.toDTO(userRepository.findByEmail(email)
 				.orElseThrow(() -> new UserNotFoundException("User with email: " + email + " not found.")));
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public UserResponse findByUsername(String username) {
 		return mapper.toDTO(userRepository.findByUsername(username)
 				.orElseThrow(() -> new UsernameNotFoundException("User with username: " + username + " not found.")));
 	}
 
 	@Override
-	public UserResponse createCustomer(CreateUserRequest createUserRequest) throws IncorrectPasswordConfirmationException {
-		if (!createUserRequest.getPassword().equals(createUserRequest.getPasswordConfirm())) {
+	public UserResponse createCustomer(CreateUserRequest request) throws IncorrectPasswordConfirmationException {
+		if (!request.getPassword().equals(request.getPasswordConfirm())) {
 			throw new IncorrectPasswordConfirmationException("Password confirmation does not match.");
 		}
 
-		User user = mapper.toEntity(createUserRequest);
+		User user = mapper.toEntity(request);
 		Role customerRole = roleRepository.findByName("ROLE_CUSTOMER").orElseThrow(() -> new RoleNotFoundException("Role CUSTOMER not found."));
 		user.setRoles(Set.of(customerRole));
-		user.setPassword(passwordEncoder.encode(createUserRequest.getPassword()));
+		user.setPassword(passwordEncoder.encode(request.getPassword()));
 		user.setEnabled(true);
 
 		userRepository.save(user);
@@ -83,15 +89,15 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserResponse createStaff(CreateUserRequest createUserRequest) throws IncorrectPasswordConfirmationException {
-		if (!createUserRequest.getPassword().equals(createUserRequest.getPasswordConfirm())) {
+	public UserResponse createStaff(CreateUserRequest request) throws IncorrectPasswordConfirmationException {
+		if (!request.getPassword().equals(request.getPasswordConfirm())) {
 			throw new IncorrectPasswordConfirmationException("Password confirmation does not match");
 		}
 
-		User user = mapper.toEntity(createUserRequest);
+		User user = mapper.toEntity(request);
 		Role staffRole = roleRepository.findByName("ROLE_STAFF").orElseThrow(() -> new RoleNotFoundException("Role STAFF not found"));
 		user.setRoles(Set.of(staffRole));
-		user.setPassword(passwordEncoder.encode(createUserRequest.getPassword()));
+		user.setPassword(passwordEncoder.encode(request.getPassword()));
 		user.setEnabled(true);
 
 		userRepository.save(user);
@@ -100,10 +106,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserResponse updateUser(Long id, UpdateUserRequest updateUserRequest) {
+	public UserResponse updateUser(Long id, UpdateUserRequest request) {
 		User user = userRepository.findById(id)
 				.orElseThrow((() -> new UserNotFoundException("User with id: " + id + " not found.")));
-		Optional.ofNullable(updateUserRequest.getUsername())
+		Optional.ofNullable(request.getUsername())
 				.ifPresent(username -> {
 					if (userRepository.findByUsername(username).isEmpty()) {
 						user.setUsername(username);
@@ -113,16 +119,16 @@ public class UserServiceImpl implements UserService {
 					}
 				});
 
-		Optional.ofNullable(updateUserRequest.getEmail())
+		Optional.ofNullable(request.getEmail())
 				.ifPresent(user::setEmail);
 
-		Optional.ofNullable(updateUserRequest.getFirstName())
+		Optional.ofNullable(request.getFirstName())
 				.ifPresent(user::setFirstName);
 
-		Optional.ofNullable(updateUserRequest.getLastName())
+		Optional.ofNullable(request.getLastName())
 				.ifPresent(user::setLastName);
 
-		Optional.ofNullable(updateUserRequest.getCompany())
+		Optional.ofNullable(request.getCompany())
 				.ifPresent(user::setCompany);
 
 

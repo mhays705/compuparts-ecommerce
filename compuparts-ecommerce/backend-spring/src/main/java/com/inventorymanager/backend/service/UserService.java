@@ -19,11 +19,11 @@ public interface UserService {
 
 	UserResponse findByUsername(String username);
 
-	UserResponse createCustomer(CreateUserRequest createUserRequest);
+	UserResponse createCustomer(CreateUserRequest request);
 
-	UserResponse createStaff(CreateUserRequest createUserRequest);
+	UserResponse createStaff(CreateUserRequest request);
 
-	UserResponse updateUser(Long id, UpdateUserRequest updateUserRequest);
+	UserResponse updateUser(Long id, UpdateUserRequest request);
 
 	void deleteUser(Long id);
 }
