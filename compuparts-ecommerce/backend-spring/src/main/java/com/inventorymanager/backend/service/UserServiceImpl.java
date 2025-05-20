@@ -2,16 +2,15 @@ package com.inventorymanager.backend.service;
 
 import com.inventorymanager.backend.dto.role.RoleResponse;
 import com.inventorymanager.backend.dto.user.CreateUserRequest;
+import com.inventorymanager.backend.dto.user.UpdateUserRequest;
 import com.inventorymanager.backend.dto.user.UserResponse;
 import com.inventorymanager.backend.entity.Role;
 import com.inventorymanager.backend.entity.User;
-import com.inventorymanager.backend.exception.IncorrectPasswordConfirmationException;
-import com.inventorymanager.backend.exception.NoUsersFoundException;
-import com.inventorymanager.backend.exception.RoleNotFoundException;
-import com.inventorymanager.backend.exception.UserNotFoundException;
+import com.inventorymanager.backend.exception.*;
 import com.inventorymanager.backend.mapper.UserMapper;
 import com.inventorymanager.backend.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.inventorymanager.backend.repository.UserRepository;
@@ -60,6 +59,11 @@ public class UserServiceImpl implements UserService {
 				.orElseThrow(() -> new UserNotFoundException("User with email: " + email + " not found.")));
 	}
 
+	@Override
+	public UserResponse findByUsername(String username) {
+		return mapper.toDTO(userRepository.findByUsername(username)
+				.orElseThrow(() -> new UsernameNotFoundException("User with username: " + username + " not found.")));
+	}
 
 	@Override
 	public UserResponse createCustomer(CreateUserRequest createUserRequest) throws IncorrectPasswordConfirmationException {
@@ -75,8 +79,62 @@ public class UserServiceImpl implements UserService {
 
 		userRepository.save(user);
 
+		return mapper.toDTO(user);
+	}
+
+	@Override
+	public UserResponse createStaff(CreateUserRequest createUserRequest) throws IncorrectPasswordConfirmationException {
+		if (!createUserRequest.getPassword().equals(createUserRequest.getPasswordConfirm())) {
+			throw new IncorrectPasswordConfirmationException("Password confirmation does not match");
+		}
+
+		User user = mapper.toEntity(createUserRequest);
+		Role staffRole = roleRepository.findByName("ROLE_STAFF").orElseThrow(() -> new RoleNotFoundException("Role STAFF not found"));
+		user.setRoles(Set.of(staffRole));
+		user.setPassword(passwordEncoder.encode(createUserRequest.getPassword()));
+		user.setEnabled(true);
+
+		userRepository.save(user);
 
 		return mapper.toDTO(user);
+	}
 
+	@Override
+	public UserResponse updateUser(Long id, UpdateUserRequest updateUserRequest) {
+		User user = userRepository.findById(id)
+				.orElseThrow((() -> new UserNotFoundException("User with id: " + id + " not found.")));
+		Optional.ofNullable(updateUserRequest.getUsername())
+				.ifPresent(username -> {
+					if (userRepository.findByUsername(username).isEmpty()) {
+						user.setUsername(username);
+					}
+					else {
+						throw new InvalidUsernameException("Username: " + username + " already in use.");
+					}
+				});
+
+		Optional.ofNullable(updateUserRequest.getEmail())
+				.ifPresent(user::setEmail);
+
+		Optional.ofNullable(updateUserRequest.getFirstName())
+				.ifPresent(user::setFirstName);
+
+		Optional.ofNullable(updateUserRequest.getLastName())
+				.ifPresent(user::setLastName);
+
+		Optional.ofNullable(updateUserRequest.getCompany())
+				.ifPresent(user::setCompany);
+
+
+		return mapper.toDTO(userRepository.save(user));
+	}
+
+
+	@Override
+	public void deleteUser(Long id) {
+		if (!userRepository.existsById(id)) {
+			throw new UserNotFoundException("User with id: " + id + " not found");
+		}
+		userRepository.deleteById(id);
 	}
 }

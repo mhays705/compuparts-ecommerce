@@ -1,10 +1,10 @@
 package com.inventorymanager.backend.controller;
 
 import com.inventorymanager.backend.dto.user.CreateUserRequest;
+import com.inventorymanager.backend.dto.user.UpdateUserRequest;
 import com.inventorymanager.backend.dto.user.UserResponse;
-import com.inventorymanager.backend.entity.User;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.inventorymanager.backend.service.UserService;
@@ -31,12 +31,51 @@ public class UserController {
 		return ResponseEntity.ok(users);
 	}
 
-	@PostMapping("/customer")
-	public ResponseEntity<UserResponse> createCustomer(@RequestBody CreateUserRequest createUserRequest) {
+	@GetMapping("/{id}")
+	public ResponseEntity<UserResponse> findUserById(@PathVariable Long id ) {
+		UserResponse user = userService.findUserById(id);
+		return ResponseEntity.ok(user);
+	}
+
+	@GetMapping("/by-email")
+	public ResponseEntity<UserResponse> findUserByEmail(@RequestParam String email) {
+		UserResponse user = userService.findUserByEmail(email);
+		return ResponseEntity.ok(user);
+	}
+
+	@GetMapping("/by-username")
+	public ResponseEntity<UserResponse> findUserByUsername(@RequestParam String username) {
+		UserResponse user = userService.findByUsername(username);
+		return ResponseEntity.ok().body(user);
+	}
+
+	@PostMapping("/customers")
+	public ResponseEntity<UserResponse> createCustomer(@Valid @RequestBody CreateUserRequest createUserRequest) {
 		UserResponse user = userService.createCustomer(createUserRequest);
-		URI location = URI.create("/customer/" + user.getId());
+		URI location = URI.create("/api/users/" + user.getId());
 		return ResponseEntity.created(location).body(user);
 	}
+
+	@PostMapping("/staff")
+	public ResponseEntity<UserResponse> createStaff(@Valid @RequestBody CreateUserRequest createUserRequest) {
+		UserResponse user = userService.createStaff(createUserRequest);
+		URI location = URI.create("/api/users/" + user.getId());
+		return ResponseEntity.created(location).body(user);
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+		userService.deleteUser(id);
+		return ResponseEntity.noContent().build();
+	}
+
+	@PatchMapping("/{id}")
+	public ResponseEntity<UserResponse> updateUser(@PathVariable Long id,@Valid @RequestBody UpdateUserRequest updateUserRequest) {
+		UserResponse updatedUser = userService.updateUser(id, updateUserRequest);
+		return ResponseEntity.ok().body(updatedUser);
+	}
+
+
 
 
 
