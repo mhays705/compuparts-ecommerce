@@ -4,48 +4,135 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
 
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<ApiError> handleGenericException(Exception e,
+														   HttpServletRequest request) {
+		ApiError apiError = new ApiError(
+				HttpStatus.INTERNAL_SERVER_ERROR,
+				"An unexpected error occurred.",
+				LocalDateTime.now(),
+				request.getRequestURI(),
+				null
+		);
+		return new ResponseEntity<>(apiError, apiError.status());
+	}
+
+
 	@ExceptionHandler(NoUsersFoundException.class)
-	public ResponseEntity<ApiError> handleNoUsersFoundException(NoUsersFoundException e, HttpServletRequest request) {
+	public ResponseEntity<ApiError> handleNoUsersFoundException(NoUsersFoundException e,
+																HttpServletRequest request) {
 		ApiError apiError = new ApiError(
 				HttpStatus.NOT_FOUND,
 				e.getMessage(),
 				LocalDateTime.now(),
-				request.getRequestURI()
+				request.getRequestURI(),
+				null
 		);
-		return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(apiError, apiError.status());
 	}
 
 
 	@ExceptionHandler(UserNotFoundException.class)
-	public ResponseEntity<ApiError> handleUserNotFoundException(NoUsersFoundException e, HttpServletRequest request) {
+	public ResponseEntity<ApiError> handleUserNotFoundException(UserNotFoundException e,
+																HttpServletRequest request) {
 		ApiError apiError = new ApiError(
 				HttpStatus.NOT_FOUND,
 				e.getMessage(),
 				LocalDateTime.now(),
-				request.getRequestURI()
+				request.getRequestURI(),
+				null
 		);
-		return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(apiError, apiError.status());
 	}
 
 	@ExceptionHandler(UsernameNotFoundException.class)
-	public ResponseEntity<ApiError> handleUsernameNotFoundException(UsernameNotFoundException e, HttpServletRequest request) {
+	public ResponseEntity<ApiError> handleUsernameNotFoundException(UsernameNotFoundException e,
+																	HttpServletRequest request) {
 		ApiError apiError = new ApiError(
 				HttpStatus.NOT_FOUND,
 				e.getMessage(),
 				LocalDateTime.now(),
-				request.getRequestURI()
+				request.getRequestURI(),
+				null
 		);
-				return new ResponseEntity(apiError,HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(apiError, apiError.status());
 	}
+
+	@ExceptionHandler(IncorrectPasswordConfirmationException.class)
+	public ResponseEntity<ApiError> handleIncorrectPasswordConfirmationException(IncorrectPasswordConfirmationException e,
+																				 HttpServletRequest request) {
+		ApiError apiError = new ApiError(
+				HttpStatus.BAD_REQUEST,
+				e.getMessage(),
+				LocalDateTime.now(),
+				request.getRequestURI(),
+				null
+		);
+		return new ResponseEntity<>(apiError, apiError.status());
+	}
+
+	@ExceptionHandler(InvalidUsernameException.class)
+	public ResponseEntity<ApiError> handleInvalidUsernameException(InvalidUsernameException e,
+																   HttpServletRequest request) {
+		ApiError apiError = new ApiError(
+				HttpStatus.BAD_REQUEST,
+				e.getMessage(),
+				LocalDateTime.now(),
+				request.getRequestURI(),
+				null
+		);
+
+		return new ResponseEntity<>(apiError, apiError.status());
+	}
+
+
+	@ExceptionHandler(RoleNotFoundException.class)
+	public ResponseEntity<ApiError> handleRoleNotFoundException(RoleNotFoundException e,
+																HttpServletRequest request) {
+		ApiError apiError = new ApiError(
+				HttpStatus.NOT_FOUND,
+				e.getMessage(),
+				LocalDateTime.now(),
+				request.getRequestURI(),
+				null
+		);
+
+		return new ResponseEntity<>(apiError, apiError.status());
+	}
+
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<ApiError> handleMethodArgumentNotValidException(MethodArgumentNotValidException e,
+																		  HttpServletRequest request) {
+		Map<String, String> errors = new HashMap<>();
+
+		e.getBindingResult().getFieldErrors().forEach(error -> {
+				errors.put(error.getField(), error.getDefaultMessage());
+				});
+
+			ApiError apiError = new ApiError(
+					HttpStatus.BAD_REQUEST,
+					"Validation Failed",
+					LocalDateTime.now(),
+					request.getRequestURI(),
+					errors
+			);
+
+			return new ResponseEntity<>(apiError, apiError.status());
+	}
+
 
 
 }
