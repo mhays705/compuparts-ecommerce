@@ -45,6 +45,6 @@ public class Product {
 	private String imageUrl;
 
 	@Column(name = "stock")
-	private int stock;
+	private Integer stock;
 
 }

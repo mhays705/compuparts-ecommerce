@@ -18,6 +18,4 @@ public class CreateManufacturerRequest {
 	@NotBlank(message = "is required")
 	private String name;
 
-	@NotNull
-	private List<CreateProductRequest> products;
 }

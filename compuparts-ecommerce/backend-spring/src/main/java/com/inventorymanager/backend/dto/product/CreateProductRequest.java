@@ -36,6 +36,6 @@ public class CreateProductRequest {
 	private Long categoryId;
 
 	@PositiveOrZero(message = "Stock cannot be less than 0")
-	private int stock;
+	private Integer stock;
 
 }

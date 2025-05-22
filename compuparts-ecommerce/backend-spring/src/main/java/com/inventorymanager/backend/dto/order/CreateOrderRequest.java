@@ -35,10 +35,6 @@ public class CreateOrderRequest {
 	@NotNull(message = "is required")
 	private OrderStatus orderStatus;
 
-	@DecimalMin(value = "0", message = "Price cannot be less than 0")
-	@NotNull(message = "is required")
-	private BigDecimal totalPrice;
-
 	@NotNull
 	@Size(min = 1, message = "Order must have at least one item")
 	private List<CreateOrderItemRequest> orderItems;

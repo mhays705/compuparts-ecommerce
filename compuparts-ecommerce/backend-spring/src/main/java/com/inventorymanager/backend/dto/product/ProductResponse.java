@@ -22,11 +22,13 @@ public class ProductResponse {
 
 	private String image;
 
-	private CategoryResponse category;
+	private Long categoryId;
 
-	private ManufacturerResponse manufacturer;
+	private Long manufacturerId;
 
 	private String sku;
+
+	private Integer stock;
 
 
 }

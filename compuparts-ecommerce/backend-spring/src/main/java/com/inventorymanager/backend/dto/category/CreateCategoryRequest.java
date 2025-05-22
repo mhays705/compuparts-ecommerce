@@ -16,5 +16,4 @@ public class CreateCategoryRequest {
 	@NotBlank(message = "is required")
 	private String name;
 
-	private List<CreateProductRequest> products;
 }
