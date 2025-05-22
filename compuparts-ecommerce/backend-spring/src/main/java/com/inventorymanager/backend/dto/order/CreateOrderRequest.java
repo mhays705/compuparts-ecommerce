@@ -22,20 +22,20 @@ import java.util.List;
 public class CreateOrderRequest {
 
 
-	@NotBlank(message = "is required")
+	@NotBlank(message = "Order number is required")
 	private String orderNumber;
 
-	@NotNull(message = "is required")
+	@NotNull(message = "Customer id is required")
 	private Long customerId;
 
-	@NotNull(message = "is required")
+	@NotNull(message = "Order date is required")
 	@PastOrPresent(message = "Date must be in past or present.")
 	private LocalDateTime orderDate;
 
-	@NotNull(message = "is required")
+	@NotNull(message = "Order status is required")
 	private OrderStatus status;
 
-	@NotNull
+	@NotNull(message = "Order must have at least one item")
 	@Size(min = 1, message = "Order must have at least one item")
 	private List<CreateOrderItemRequest> orderItems;
 

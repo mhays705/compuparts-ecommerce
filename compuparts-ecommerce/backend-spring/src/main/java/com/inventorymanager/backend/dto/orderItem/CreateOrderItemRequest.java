@@ -16,16 +16,17 @@ import java.math.BigDecimal;
 @Builder
 public class CreateOrderItemRequest {
 
-	@NotNull(message = "is required")
+	@NotNull(message = "Order id is required")
 	private Long orderId;
 
-	@NotNull(message = "is required")
+	@NotNull(message = "Product id is required")
 	private Long productId;
 
+	@NotNull(message = "Quantity is required")
 	@Min(value = 1, message = "Quantity cannot be less than 1")
-	private int quantity;
+	private Integer quantity;
 
-	@NotNull(message = "is required")
+	@NotNull(message = "The price at time of order is required")
 	@DecimalMin(value = "0", message = "Price cannot be less than 0")
 	private BigDecimal priceAtOrder;
 

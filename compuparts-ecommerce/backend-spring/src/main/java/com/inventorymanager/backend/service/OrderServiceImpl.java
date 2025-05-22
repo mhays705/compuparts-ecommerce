@@ -4,6 +4,7 @@ import com.inventorymanager.backend.dto.order.CreateOrderRequest;
 import com.inventorymanager.backend.dto.order.OrderResponse;
 import com.inventorymanager.backend.dto.order.UpdateOrderRequest;
 import com.inventorymanager.backend.dto.orderItem.CreateOrderItemRequest;
+import com.inventorymanager.backend.dto.orderItem.OrderItemResponse;
 import com.inventorymanager.backend.entity.Order;
 import com.inventorymanager.backend.entity.OrderItem;
 import com.inventorymanager.backend.enums.OrderStatus;
@@ -26,13 +27,15 @@ public class OrderServiceImpl implements OrderService {
 
 	private final OrderRepository orderRepository;
 	private final OrderMapper mapper;
-	private final OrderItemMapper orderItemMapper;
+	private final OrderItemService orderItemService;
 
 	@Autowired
-	public OrderServiceImpl(OrderRepository orderRepository, OrderMapper mapper, OrderItemMapper orderItemMapper) {
+	public OrderServiceImpl(OrderRepository orderRepository,
+							OrderMapper mapper,
+							OrderItemService orderItemService) {
 		this.orderRepository = orderRepository;
 		this.mapper = mapper;
-		this.orderItemMapper = orderItemMapper;
+		this.orderItemService = orderItemService;
 	}
 
 
@@ -76,9 +79,8 @@ public class OrderServiceImpl implements OrderService {
 				item.setQuantity(item.getQuantity() + newItem.getQuantity());
 			}
 			else {
-				OrderItem newOrderItem = orderItemMapper.toEntity(newItem);
-				newOrderItem.setOrder(order);
-				existingItems.add(newOrderItem);
+				newItem.setOrderId(order.getId());
+				orderItemService.createOrderItem(newItem);
 			}
 		}
 

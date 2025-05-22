@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CreateCategoryRequest {
 
-	@NotBlank(message = "is required")
+	@NotBlank(message = "Category name is required")
 	private String name;
 
 }

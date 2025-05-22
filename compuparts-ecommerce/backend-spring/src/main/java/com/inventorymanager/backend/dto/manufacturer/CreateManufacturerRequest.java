@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class CreateManufacturerRequest {
 
-	@NotBlank(message = "is required")
+	@NotBlank(message = "Manufacturer name is required")
 	private String name;
 
 }

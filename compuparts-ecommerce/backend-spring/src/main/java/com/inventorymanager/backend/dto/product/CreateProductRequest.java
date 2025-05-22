@@ -16,23 +16,23 @@ import java.math.BigDecimal;
 public class CreateProductRequest {
 
 
-	@NotBlank(message = "is required")
+	@NotBlank(message = "Product name is required")
 	private String name;
 
 	private String description;
 
-	@NotNull(message = "is required")
+	@NotNull(message = "Product price is required")
 	private BigDecimal price;
 
-	@NotBlank(message = "is required")
+	@NotBlank(message = "Product sku is required")
 	private String sku;
 
 	private String imageUrl;
 
-	@NotNull(message = "is required")
+	@NotNull(message = "Manufacturer id is required")
 	private Long manufacturerId;
 
-	@NotNull(message = "is required")
+	@NotNull(message = "Category id is required")
 	private Long categoryId;
 
 	@PositiveOrZero(message = "Stock cannot be less than 0")

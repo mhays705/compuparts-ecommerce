@@ -4,6 +4,7 @@ import com.inventorymanager.backend.dto.orderItem.CreateOrderItemRequest;
 import com.inventorymanager.backend.dto.orderItem.OrderItemResponse;
 import com.inventorymanager.backend.entity.OrderItem;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 

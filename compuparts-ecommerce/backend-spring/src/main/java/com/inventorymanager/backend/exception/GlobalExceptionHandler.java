@@ -176,5 +176,31 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(error, error.status());
 	}
 
+	@ExceptionHandler(OrderItemNotFoundException.class)
+	public ResponseEntity<ApiError> handleOrderItemNotFoundException(OrderItemNotFoundException e,
+																	 HttpServletRequest request) {
+		ApiError error = new ApiError(
+				HttpStatus.NOT_FOUND,
+				e.getMessage(),
+				LocalDateTime.now(),
+				request.getRequestURI(),
+				null
+		);
+
+		return new ResponseEntity<>(error, error.status());
+	}
+
+	@ExceptionHandler(MismatchedOrderItemException.class)
+	public ResponseEntity<ApiError> handleIllegalArgumentException(MismatchedOrderItemException e,
+																   HttpServletRequest request) {
+		ApiError error = new ApiError(
+				HttpStatus.BAD_REQUEST,
+				e.getMessage(),
+				LocalDateTime.now(),
+				request.getRequestURI(),
+				null
+		);
+		return new ResponseEntity<>(error, error.status());
+	}
 
 }

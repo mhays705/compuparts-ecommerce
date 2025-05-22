@@ -19,27 +19,27 @@ import java.util.Set;
 public class CreateUserRequest {
 
 
-	@NotBlank(message = "is required")
+	@NotBlank(message = "Username is required")
 	@Size(min = 5, max = 14, message = "Must be between 5 and 14 characters")
 	private String username;
 
-	@NotBlank(message = "is required")
+	@NotBlank(message = "Password is required")
 	@Size(min = 5, max = 100, message = "Must be between 5 and 100 characters")
 	private String password;
 
-	@NotBlank(message = "is required")
+	@NotBlank(message = "Password confirmation is required")
 	@Size(min = 5, max = 100, message = "Must be between 5 and 100 characters")
 	private String passwordConfirm;
 
 	@Email(message = "Please enter valid email")
-	@NotBlank(message = "is required")
+	@NotBlank(message = "Valid email is required")
 	private String email;
 
-	@NotBlank(message = "is required")
+	@NotBlank(message = "First name is required")
 	@Size(max = 80, message = "must be less than 80 characters")
 	private String firstName;
 
-	@NotBlank(message = "is required")
+	@NotBlank(message = "Last name is required")
 	@Size(max = 80, message = "must be less than 80 characters")
 	private String lastName;
 
