@@ -39,8 +39,9 @@ public class ProductServiceImpl implements ProductService {
 		this.manufacturerRepository = manufacturerRepository;
 		this.categoryRepository = categoryRepository;
 	}
-	@Transactional(readOnly = true)
+
 	@Override
+	@Transactional(readOnly = true)
 	public ProductResponse findProductById(Long id) {
 		return mapper.toDTO(productRepository.findById(id)
 				.orElseThrow(() -> new ProductNotFoundException("Product with id: " + id + " not found.")));
