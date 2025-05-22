@@ -8,11 +8,11 @@
 		<version>3.4.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.inventorymanager</groupId>
+	<groupId>com.ecommerce.system</groupId>
 	<artifactId>backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>backend</name>
-	<description>Rest API for Inventory Manager</description>
+	<description>Rest API for e-commerce system</description>
 	<url/>
 	<licenses>
 		<license/>
