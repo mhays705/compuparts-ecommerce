@@ -10,11 +10,11 @@ public interface OrderItemService {
 
 	List<OrderItemResponse> findAllItemsByOrderId(Long orderId);
 
-	OrderItemResponse findOrderItemById(Long itemId);
+	OrderItemResponse findOrderItemById(Long itemId, Long orderId);
 
-	OrderItemResponse createOrderItem(CreateOrderItemRequest request);
+	OrderItemResponse createOrderItem(Long orderId, CreateOrderItemRequest request);
 
-	OrderItemResponse updateOrderItem(UpdateOrderItemRequest request, Long itemId);
+	OrderItemResponse updateOrderItem(UpdateOrderItemRequest request, Long itemId, Long orderId);
 
 	void deleteOrderItem(Long itemId, Long orderId);
 }

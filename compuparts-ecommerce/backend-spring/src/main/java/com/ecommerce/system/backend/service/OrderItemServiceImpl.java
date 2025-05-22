@@ -52,16 +52,20 @@ public class OrderItemServiceImpl implements OrderItemService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public OrderItemResponse findOrderItemById(Long itemId) {
+	public OrderItemResponse findOrderItemById(Long itemId, Long orderId) {
+
 		OrderItem item = orderItemRepository.findById(itemId)
 				.orElseThrow(() -> new OrderItemNotFoundException("Order item with id: " + itemId + " not found"));
+		if (!Objects.equals(item.getOrder().getId(), orderId)) {
+			throw new MismatchedOrderItemException("Order item does not belong to order.");
+		}
 		return mapper.toDTO(item);
 	}
 
 	@Override
-	public OrderItemResponse createOrderItem(CreateOrderItemRequest request) {
-		Order order = orderRepository.findById(request.getOrderId())
-				.orElseThrow(() -> new OrderNotFoundException("Order id: " + request.getOrderId()+ " not found"));
+	public OrderItemResponse createOrderItem(Long orderId, CreateOrderItemRequest request) {
+		Order order = orderRepository.findById(orderId)
+				.orElseThrow(() -> new OrderNotFoundException("Order id: " + orderId + " not found"));
 		Product product = productRepository.findById(request.getProductId())
 				.orElseThrow(() -> new ProductNotFoundException("Product not found"));
 		OrderItem newItem = mapper.toEntity(request);
@@ -72,7 +76,7 @@ public class OrderItemServiceImpl implements OrderItemService {
 	}
 
 	@Override
-	public OrderItemResponse updateOrderItem(UpdateOrderItemRequest request, Long itemId) {
+	public OrderItemResponse updateOrderItem(UpdateOrderItemRequest request, Long itemId, Long orderId) {
 		OrderItem item = orderItemRepository.findById(itemId)
 				.orElseThrow(() -> new OrderItemNotFoundException("Order item with id: " + itemId + " not found"));
 		item.setQuantity(request.getQuantity());

@@ -65,25 +65,8 @@ public class OrderServiceImpl implements OrderService {
 				.orElseThrow(() -> new OrderNotFoundException("Order with id: " + id + " not found"));
 		if (!order.getStatus().equals(request.getStatus())) {
 			order.setStatus(request.getStatus());
+			order = orderRepository.save(order);
 		}
-		List<OrderItem> existingItems = order.getOrderItems();
-
-		for (CreateOrderItemRequest newItem : request.getOrderItems()) {
-			Optional<OrderItem> matchingItem = existingItems.stream()
-					.filter(existing -> Objects.equals(existing.getProduct().getId(), newItem.getProductId()))
-					.findFirst();
-			if (matchingItem.isPresent()) {
-				OrderItem item = matchingItem.get();
-				item.setQuantity(item.getQuantity() + newItem.getQuantity());
-			}
-			else {
-				newItem.setOrderId(order.getId());
-				orderItemService.createOrderItem(newItem);
-			}
-		}
-
-		order = orderRepository.save(order);
-
 		return mapper.toDTO(order);
 	}
 
