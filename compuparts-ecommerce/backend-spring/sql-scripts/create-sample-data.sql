@@ -24,7 +24,7 @@ VALUES (1, 'Ryzen 9 5900x', 'MCX1-001', 1, 1, 199.99, '12 core, 24 thread, 4.5gh
 -- Order Table
 
 INSERT INTO `orders` (`id`, `order_number`, `customer_id`, `order_date`, `status`, `total`, `created_at`, `updated_at`)
-VALUES (1, 'ORD20250514-001', 1, CURDATE(), 'Pending', 199.99, NOW(), NOW());
+VALUES (1, 'ORD20250514-001', 1, CURDATE(), 'PENDING', 199.99, NOW(), NOW());
 
 -- Order Items Table
 
