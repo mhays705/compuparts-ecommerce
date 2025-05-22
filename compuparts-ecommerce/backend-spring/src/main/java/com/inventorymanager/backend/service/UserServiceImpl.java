@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
 		List<User> users = userRepository.findAll().
 				stream().toList();
 		if (users.isEmpty()) {
-			throw new NoUsersFoundException("No users found in the system");
+			throw new NoUsersFoundException("No users found in the system. At least one admin is required.");
 		}
 		return mapper.toDTOList(users);
 	}

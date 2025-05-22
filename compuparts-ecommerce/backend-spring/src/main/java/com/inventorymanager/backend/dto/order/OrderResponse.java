@@ -25,7 +25,7 @@ public class OrderResponse {
 
 	private LocalDate orderDate;
 
-	private OrderStatus orderStatus;
+	private OrderStatus status;
 
 	private BigDecimal totalPrice;
 

@@ -50,11 +50,7 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<ProductResponse> findAllProducts() {
-		List<Product> products = productRepository.findAll();
-		if (products.isEmpty()) {
-			throw new ProductNotFoundException("No products found.");
-		}
-		return mapper.toDTOList(products);
+		return mapper.toDTOList(productRepository.findAll());
 	}
 
 	@Override
@@ -108,5 +104,18 @@ public class ProductServiceImpl implements ProductService {
 			throw new ProductNotFoundException("Product with id: " + id + " not found.");
 		}
 		productRepository.deleteById(id);
+	}
+
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<ProductResponse> findAllByManufacturer(Long id) {
+		return mapper.toDTOList(productRepository.findAllByManufacturer_id(id));
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<ProductResponse> findAllByCategory(Long id) {
+		return mapper.toDTOList(productRepository.findAllByCategory_id(id));
 	}
 }

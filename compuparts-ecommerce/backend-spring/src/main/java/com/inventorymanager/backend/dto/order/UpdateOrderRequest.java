@@ -15,6 +15,6 @@ import java.util.List;
 @Builder
 public class UpdateOrderRequest {
 
-	private OrderStatus orderStatus;
+	private OrderStatus status;
 	private List<CreateOrderItemRequest> orderItems;
 }

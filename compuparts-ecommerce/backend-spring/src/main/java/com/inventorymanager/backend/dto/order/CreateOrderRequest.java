@@ -33,7 +33,7 @@ public class CreateOrderRequest {
 	private LocalDateTime orderDate;
 
 	@NotNull(message = "is required")
-	private OrderStatus orderStatus;
+	private OrderStatus status;
 
 	@NotNull
 	@Size(min = 1, message = "Order must have at least one item")

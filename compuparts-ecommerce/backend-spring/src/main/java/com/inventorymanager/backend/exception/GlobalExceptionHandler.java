@@ -162,6 +162,19 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(error, error.status());
 	}
 
+	@ExceptionHandler(OrderNotFoundException.class)
+	public ResponseEntity<ApiError> handleOrderNotFoundException(OrderNotFoundException e,
+																 HttpServletRequest request) {
+		ApiError error = new ApiError(
+				HttpStatus.NOT_FOUND,
+				e.getMessage(),
+				LocalDateTime.now(),
+				request.getRequestURI(),
+				null
+		);
+
+		return new ResponseEntity<>(error, error.status());
+	}
 
 
 }
