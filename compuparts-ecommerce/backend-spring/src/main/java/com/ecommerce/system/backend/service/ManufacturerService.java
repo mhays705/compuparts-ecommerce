@@ -13,6 +13,6 @@ public interface ManufacturerService {
 
 	ManufacturerResponse createManufacturer(CreateManufacturerRequest request);
 
-	void deleteManufactuer(Long id);
+	void deleteManufacturer(Long id);
 
 }
