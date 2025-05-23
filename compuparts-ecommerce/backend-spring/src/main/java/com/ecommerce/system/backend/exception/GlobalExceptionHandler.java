@@ -1,6 +1,7 @@
 package com.ecommerce.system.backend.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -202,4 +203,31 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(error, error.status());
 	}
 
+	@ExceptionHandler(NoCategoriesFoundException.class)
+	private ResponseEntity<ApiError> handleNoCategoriesFoundException(NoCategoriesFoundException e,
+																	  HttpServletRequest request) {
+		ApiError error = new ApiError(
+				HttpStatus.NOT_FOUND,
+				e.getMessage(),
+				LocalDateTime.now(),
+				request.getRequestURI(),
+				null
+		);
+
+		return new ResponseEntity(error, error.status());
+	}
+
+	@ExceptionHandler(NoManufacturersFoundException.class)
+	private ResponseEntity<ApiError> handleNoManufacturersFoundException(NoManufacturersFoundException e,
+																	  HttpServletRequest request) {
+		ApiError error = new ApiError(
+				HttpStatus.NOT_FOUND,
+				e.getMessage(),
+				LocalDateTime.now(),
+				request.getRequestURI(),
+				null
+		);
+
+		return new ResponseEntity(error, error.status());
+	}
 }
