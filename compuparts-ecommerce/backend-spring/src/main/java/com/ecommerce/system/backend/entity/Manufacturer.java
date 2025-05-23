@@ -24,7 +24,4 @@ public class Manufacturer {
 	@Column(name = "name")
 	private String name;
 
-	@OneToMany(mappedBy = "manufacturer",cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Product> products;
-
 }
