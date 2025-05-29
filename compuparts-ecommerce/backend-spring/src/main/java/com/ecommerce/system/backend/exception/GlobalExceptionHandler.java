@@ -230,4 +230,32 @@ public class GlobalExceptionHandler {
 
 		return new ResponseEntity(error, error.status());
 	}
+
+	@ExceptionHandler(DuplicateCategoryException.class)
+	public ResponseEntity<ApiError> handleDuplicateCategoryException(DuplicateCategoryException e,
+																	 HttpServletRequest request) {
+		ApiError error = new ApiError(
+				HttpStatus.CONFLICT,
+				e.getMessage(),
+				LocalDateTime.now(),
+				request.getRequestURI(),
+				null
+		);
+
+				return new ResponseEntity<>(error, error.status());
+	}
+
+	@ExceptionHandler(DuplicateManufacturerException.class)
+	public ResponseEntity<ApiError> handleDuplicateManufacturerException(DuplicateManufacturerException e,
+																		 HttpServletRequest request) {
+		ApiError error = new ApiError(
+				HttpStatus.CONFLICT,
+				e.getMessage(),
+				LocalDateTime.now(),
+				request.getRequestURI(),
+				null
+		);
+
+		return new ResponseEntity<>(error, error.status());
+	}
 }

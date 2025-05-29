@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -71,6 +72,7 @@ public class OrderItemServiceImpl implements OrderItemService {
 		OrderItem newItem = mapper.toEntity(request);
 		newItem.setOrder(order);
 		newItem.setProduct(product);
+		newItem.setPriceAtOrder(product.getPrice());
 		orderItemRepository.save(newItem);
 		return mapper.toDTO(newItem);
 	}
@@ -93,4 +95,7 @@ public class OrderItemServiceImpl implements OrderItemService {
 		}
 		orderItemRepository.delete(item);
 	}
+
+
+
 }

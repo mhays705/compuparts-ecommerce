@@ -3,6 +3,7 @@ package com.ecommerce.system.backend.service;
 import com.ecommerce.system.backend.dto.manufacturer.CreateManufacturerRequest;
 import com.ecommerce.system.backend.dto.manufacturer.ManufacturerResponse;
 import com.ecommerce.system.backend.entity.Manufacturer;
+import com.ecommerce.system.backend.exception.DuplicateManufacturerException;
 import com.ecommerce.system.backend.exception.InvalidUsernameException;
 import com.ecommerce.system.backend.exception.ManufacturerNotFoundException;
 import com.ecommerce.system.backend.exception.NoManufacturersFoundException;
@@ -51,7 +52,7 @@ public class ManufacturerServiceImpl implements ManufacturerService {
 			.anyMatch(manufacturer -> manufacturer.getName().equalsIgnoreCase(request.getName()));
 
 	if (duplicate) {
-		throw new IllegalArgumentException("Manufacturer already exists in system");
+		throw new DuplicateManufacturerException("Manufacturer already exists in system");
 	}
 
 	Manufacturer manufacturer= mapper.toEntity(request);

@@ -5,6 +5,7 @@ import com.ecommerce.system.backend.dto.category.CategoryResponse;
 import com.ecommerce.system.backend.dto.category.CreateCategoryRequest;
 import com.ecommerce.system.backend.entity.Category;
 import com.ecommerce.system.backend.exception.CategoryNotFoundException;
+import com.ecommerce.system.backend.exception.DuplicateCategoryException;
 import com.ecommerce.system.backend.exception.NoCategoriesFoundException;
 import com.ecommerce.system.backend.mapper.CategoryMapper;
 import com.ecommerce.system.backend.repository.CategoryRepository;
@@ -50,7 +51,7 @@ public class CategoryServiceImpl implements CategoryService{
 				.anyMatch(category -> category.getName().equalsIgnoreCase(request.getName()));
 
 		if (duplicate) {
-			throw new IllegalArgumentException("Category with name: " + request.getName() + " already exists");
+			throw new DuplicateCategoryException("Category with name: " + request.getName() + " already exists");
 		}
 
 		Category category = mapper.toEntity(request);

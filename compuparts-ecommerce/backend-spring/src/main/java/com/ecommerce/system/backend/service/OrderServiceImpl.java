@@ -14,10 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -55,6 +54,7 @@ public class OrderServiceImpl implements OrderService {
 		Order order = mapper.toEntity(request);
 		order.setStatus(OrderStatus.PROCESSING);
 		order.setOrderItems(new ArrayList<>());
+		order.setTotal(calculateOrderTotal(order.getOrderItems()));
 		order = orderRepository.save(order);
 		return mapper.toDTO(order);
 	}
@@ -76,6 +76,16 @@ public class OrderServiceImpl implements OrderService {
 			throw new OrderNotFoundException("Order with id: " + id + " not found.");
 		}
 		orderRepository.deleteById(id);
+	}
+
+	private BigDecimal calculateOrderTotal(List<OrderItem> items) {
+
+		BigDecimal total = BigDecimal.ZERO;
+
+		for (OrderItem item : items) {
+			total = total.add(item.getPriceAtOrder());
+		}
+		return total;
 	}
 
 
