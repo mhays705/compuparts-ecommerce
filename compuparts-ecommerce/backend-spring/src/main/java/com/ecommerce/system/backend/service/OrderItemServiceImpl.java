@@ -74,6 +74,8 @@ public class OrderItemServiceImpl implements OrderItemService {
 		newItem.setProduct(product);
 		newItem.setPriceAtOrder(product.getPrice());
 		orderItemRepository.save(newItem);
+		order.getOrderItems().add(newItem);
+		calculateOrderTotal(order);
 		return mapper.toDTO(newItem);
 	}
 
@@ -94,6 +96,16 @@ public class OrderItemServiceImpl implements OrderItemService {
 			throw new MismatchedOrderItemException("Order item does not belong to order");
 		}
 		orderItemRepository.delete(item);
+	}
+
+	// Helper function for calculating order total
+	private void calculateOrderTotal(Order order) {
+		List<OrderItem> items = orderItemRepository.findAllByOrder_Id(order.getId());
+		BigDecimal total = items.stream()
+				.map(OrderItem::getPriceAtOrder)
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+		order.setTotal(total);
+		orderRepository.save(order);
 	}
 
 

@@ -25,11 +25,4 @@ public class CreateOrderItemRequest {
 	@NotNull(message = "Quantity is required")
 	@Min(value = 1, message = "Quantity cannot be less than 1")
 	private Integer quantity;
-
-	@NotNull(message = "The price at time of order is required")
-	@DecimalMin(value = "0", message = "Price cannot be less than 0")
-	private BigDecimal priceAtOrder;
-
-
-
 }

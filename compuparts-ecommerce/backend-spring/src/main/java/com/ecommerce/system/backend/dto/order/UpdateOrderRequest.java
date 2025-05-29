@@ -16,5 +16,5 @@ import java.util.List;
 public class UpdateOrderRequest {
 
 	private OrderStatus status;
-	private List<CreateOrderItemRequest> orderItems;
+	private CreateOrderItemRequest newItem;
 }

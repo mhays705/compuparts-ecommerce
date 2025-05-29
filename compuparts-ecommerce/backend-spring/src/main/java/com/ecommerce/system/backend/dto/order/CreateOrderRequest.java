@@ -25,16 +25,8 @@ public class CreateOrderRequest {
 	@NotNull(message = "Customer id is required")
 	private Long customerId;
 
-	@NotNull(message = "Order date is required")
-	@PastOrPresent(message = "Date must be in past or present.")
-	private LocalDateTime orderDate;
 
-	@NotNull(message = "Order status is required")
-	private OrderStatus status;
 
-	@NotNull(message = "Order must have at least one item")
-	@Size(min = 1, message = "Order must have at least one item")
-	private List<CreateOrderItemRequest> orderItems;
 
 
 

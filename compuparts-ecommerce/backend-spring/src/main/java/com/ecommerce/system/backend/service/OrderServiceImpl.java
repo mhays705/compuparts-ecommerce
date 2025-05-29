@@ -6,15 +6,19 @@ import com.ecommerce.system.backend.dto.order.UpdateOrderRequest;
 import com.ecommerce.system.backend.dto.orderItem.CreateOrderItemRequest;
 import com.ecommerce.system.backend.entity.Order;
 import com.ecommerce.system.backend.entity.OrderItem;
+import com.ecommerce.system.backend.entity.User;
 import com.ecommerce.system.backend.enums.OrderStatus;
 import com.ecommerce.system.backend.exception.OrderNotFoundException;
+import com.ecommerce.system.backend.exception.UserNotFoundException;
 import com.ecommerce.system.backend.mapper.OrderMapper;
 import com.ecommerce.system.backend.repository.OrderRepository;
+import com.ecommerce.system.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,14 +29,19 @@ public class OrderServiceImpl implements OrderService {
 	private final OrderRepository orderRepository;
 	private final OrderMapper mapper;
 	private final OrderItemService orderItemService;
+	private final UserRepository userRepository;
 
 	@Autowired
 	public OrderServiceImpl(OrderRepository orderRepository,
 							OrderMapper mapper,
-							OrderItemService orderItemService) {
+							OrderItemService orderItemService,
+							UserRepository userRepository
+	) {
 		this.orderRepository = orderRepository;
 		this.mapper = mapper;
 		this.orderItemService = orderItemService;
+		this.userRepository = userRepository;
+
 	}
 
 
@@ -51,10 +60,14 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public OrderResponse createOrder(CreateOrderRequest request) {
+		User customer = userRepository.findById(request.getCustomerId())
+				.orElseThrow(() -> new UserNotFoundException("Customer with id: " + request.getCustomerId() + " not found"));
 		Order order = mapper.toEntity(request);
-		order.setStatus(OrderStatus.PROCESSING);
+		order.setCustomer(customer);
+		order.setStatus(OrderStatus.DRAFT);
 		order.setOrderItems(new ArrayList<>());
-		order.setTotal(calculateOrderTotal(order.getOrderItems()));
+		order.setTotal(BigDecimal.ZERO);
+		order.setOrderDate(LocalDate.now());
 		order = orderRepository.save(order);
 		return mapper.toDTO(order);
 	}
@@ -63,9 +76,14 @@ public class OrderServiceImpl implements OrderService {
 	public OrderResponse updateOrder(Long id, UpdateOrderRequest request) {
 		Order order = orderRepository.findById(id)
 				.orElseThrow(() -> new OrderNotFoundException("Order with id: " + id + " not found"));
-		if (!order.getStatus().equals(request.getStatus())) {
+		if (!order.getStatus().equals(request.getStatus()) && request.getStatus() != null) {
 			order.setStatus(request.getStatus());
 			order = orderRepository.save(order);
+		}
+		if (request.getNewItem() != null) {
+			orderItemService.createOrderItem(order.getId(), request.getNewItem());
+			order = orderRepository.findById(id)
+					.orElseThrow(() -> new OrderNotFoundException("Order with id: " + id + " not found"));
 		}
 		return mapper.toDTO(order);
 	}
@@ -76,16 +94,6 @@ public class OrderServiceImpl implements OrderService {
 			throw new OrderNotFoundException("Order with id: " + id + " not found.");
 		}
 		orderRepository.deleteById(id);
-	}
-
-	private BigDecimal calculateOrderTotal(List<OrderItem> items) {
-
-		BigDecimal total = BigDecimal.ZERO;
-
-		for (OrderItem item : items) {
-			total = total.add(item.getPriceAtOrder());
-		}
-		return total;
 	}
 
 
