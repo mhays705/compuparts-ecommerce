@@ -1,7 +1,6 @@
-package com.ecommerce.system.backend.config;
+package com.ecommerce.system.backend.security;
 
 
-import com.ecommerce.system.backend.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,10 +15,10 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-	private final UserDetailsServiceImpl userDetailsService;
+	private final CustomUserDetailsService userDetailsService;
 
 	@Autowired
-	public SecurityConfig(UserDetailsServiceImpl userDetailsService) {
+	public SecurityConfig(CustomUserDetailsService userDetailsService) {
 		this.userDetailsService = userDetailsService;
 	}
 

@@ -1,4 +1,4 @@
-package com.ecommerce.system.backend.service;
+package com.ecommerce.system.backend.security;
 
 import com.ecommerce.system.backend.entity.User;
 import com.ecommerce.system.backend.repository.UserRepository;
@@ -13,11 +13,11 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Service
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
 
 	private final UserRepository userRepository;
 
-	public UserDetailsServiceImpl(UserRepository userRepository) {
+	public CustomUserDetailsService(UserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
 
