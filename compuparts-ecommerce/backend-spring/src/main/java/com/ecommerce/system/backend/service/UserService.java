@@ -2,6 +2,7 @@ package com.ecommerce.system.backend.service;
 
 import com.ecommerce.system.backend.dto.user.CreateUserRequest;
 import com.ecommerce.system.backend.dto.user.UpdateUserRequest;
+import com.ecommerce.system.backend.dto.user.UserLoginRequest;
 import com.ecommerce.system.backend.dto.user.UserResponse;
 
 import java.util.List;
@@ -24,4 +25,8 @@ public interface UserService {
 	UserResponse updateUser(Long id, UpdateUserRequest request);
 
 	void deleteUser(Long id);
+
+	String verify(UserLoginRequest request);
+
+
 }

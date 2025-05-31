@@ -1,7 +1,9 @@
 package com.ecommerce.system.backend.controller;
 
+import com.ecommerce.system.backend.dto.jwt.JwtResponse;
 import com.ecommerce.system.backend.dto.user.CreateUserRequest;
 import com.ecommerce.system.backend.dto.user.UpdateUserRequest;
+import com.ecommerce.system.backend.dto.user.UserLoginRequest;
 import com.ecommerce.system.backend.dto.user.UserResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +75,12 @@ public class UserController {
 	public ResponseEntity<UserResponse> updateUser(@PathVariable Long id,@Valid @RequestBody UpdateUserRequest updateUserRequest) {
 		UserResponse updatedUser = userService.updateUser(id, updateUserRequest);
 		return ResponseEntity.ok().body(updatedUser);
+	}
+
+	@PostMapping("/login")
+	public ResponseEntity<JwtResponse> login(@RequestBody UserLoginRequest request) {
+		String token = userService.verify(request);
+		return ResponseEntity.ok(new JwtResponse(token));
 	}
 
 

@@ -2,13 +2,19 @@ package com.ecommerce.system.backend.service;
 
 import com.ecommerce.system.backend.dto.user.CreateUserRequest;
 import com.ecommerce.system.backend.dto.user.UpdateUserRequest;
+import com.ecommerce.system.backend.dto.user.UserLoginRequest;
 import com.ecommerce.system.backend.dto.user.UserResponse;
 import com.ecommerce.system.backend.entity.Role;
 import com.ecommerce.system.backend.entity.User;
 import com.ecommerce.system.backend.exception.*;
 import com.ecommerce.system.backend.mapper.UserMapper;
 import com.ecommerce.system.backend.repository.RoleRepository;
+import com.ecommerce.system.backend.security.JWTService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,13 +33,23 @@ public class UserServiceImpl implements UserService {
 	private final UserMapper mapper;
 	private final BCryptPasswordEncoder passwordEncoder;
 	private final RoleRepository roleRepository;
+	private final AuthenticationManager authenticationManager;
+	private final JWTService jwtService;
+
 
 	@Autowired
-	public UserServiceImpl(UserRepository userRepository, UserMapper mapper, BCryptPasswordEncoder passwordEncoder, RoleRepository roleRepository) {
+	public UserServiceImpl(UserRepository userRepository,
+						   UserMapper mapper,
+						   BCryptPasswordEncoder passwordEncoder,
+						   RoleRepository roleRepository,
+						   AuthenticationManager authenticationManager,
+						   JWTService jwtService) {
 		this.userRepository = userRepository;
 		this.mapper = mapper;
 		this.passwordEncoder = passwordEncoder;
 		this.roleRepository = roleRepository;
+		this.authenticationManager = authenticationManager;
+		this.jwtService = jwtService;
 	}
 
 	@Override
@@ -141,4 +157,22 @@ public class UserServiceImpl implements UserService {
 		}
 		userRepository.deleteById(id);
 	}
+
+
+	public String verify(UserLoginRequest request) {
+		try {
+			Authentication auth =
+					authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+			return jwtService.generateToken(auth);
+		}
+
+		catch (AuthenticationException e) {
+			throw new InvalidCredentialsException();
+		}
+
+	}
+
+
+
+
 }
