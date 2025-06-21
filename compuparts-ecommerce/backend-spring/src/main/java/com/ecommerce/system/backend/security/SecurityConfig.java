@@ -64,7 +64,7 @@ public class SecurityConfig {
 						configurer
 								.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 								.requestMatchers("/api/users/login", "/api/users/customers").permitAll()
-								.requestMatchers("/api/**").hasRole("ADMIN")
+								//.requestMatchers("/api/**").hasRole("ADMIN")
 								.anyRequest().authenticated())
 				.exceptionHandling(configurer ->
 						configurer
