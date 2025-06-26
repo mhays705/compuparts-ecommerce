@@ -1,7 +1,12 @@
 import React from "react";
 import icon from "../../assets/images/navbar-brand-icon.png";
 
-const Navbar = () => {
+const Navbar = ({ loggedIn, setLoggedIn, onLoginClick }) => {
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setLoggedIn(false);
+  };
+
   return (
     <>
       <nav className="navbar sticky-top navbar-dark bg-dark d-flex justify-content-between align-items-center px-3">
@@ -16,9 +21,23 @@ const Navbar = () => {
             CompuParts
           </a>
         </div>
-        <a className="nav-link text-light" href="/login">
-          Login{" "}
-        </a>
+        {loggedIn ? (
+          <button
+            type="button"
+            className="btn btn-outline-light"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="btn btn-outline-light"
+            onClick={onLoginClick}
+          >
+            Login
+          </button>
+        )}
       </nav>
     </>
   );
