@@ -14,6 +14,7 @@ const LoginModal = ({ show, onHide, setLoggedIn }) => {
     setPassword("");
     setError("");
     setLoading(false);
+    setShowSuccess(false);
   }, [show]);
 
   const url = "http://localhost:8080/api/users/login";
