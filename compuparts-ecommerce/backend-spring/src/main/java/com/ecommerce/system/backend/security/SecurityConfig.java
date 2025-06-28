@@ -63,7 +63,7 @@ public class SecurityConfig {
 				.authorizeHttpRequests(configurer ->
 						configurer
 								.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-								.requestMatchers("/api/users/login", "/api/users/customers").permitAll()
+								.requestMatchers("/api/users/login", "/api/users/customer").permitAll()
 								//.requestMatchers("/api/**").hasRole("ADMIN")
 								.anyRequest().authenticated())
 				.exceptionHandling(configurer ->

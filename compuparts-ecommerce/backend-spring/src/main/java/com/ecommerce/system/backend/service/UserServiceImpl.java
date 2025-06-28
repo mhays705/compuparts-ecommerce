@@ -91,6 +91,11 @@ public class UserServiceImpl implements UserService {
 			throw new IncorrectPasswordConfirmationException("Password confirmation does not match.");
 		}
 
+
+		if (userRepository.existsByUsername(request.getUsername())) {
+			throw new UsernameAlreadyExistsException("Username already taken.");
+		}
+
 		User user = mapper.toEntity(request);
 		Role customerRole = roleRepository.findByName("ROLE_CUSTOMER").orElseThrow(() -> new RoleNotFoundException("Role CUSTOMER not found."));
 		user.setRoles(Set.of(customerRole));
@@ -107,6 +112,11 @@ public class UserServiceImpl implements UserService {
 		if (!request.getPassword().equals(request.getPasswordConfirm())) {
 			throw new IncorrectPasswordConfirmationException("Password confirmation does not match");
 		}
+
+		if (userRepository.existsByUsername(request.getUsername())) {
+			throw new UsernameAlreadyExistsException("Username already taken.");
+		}
+
 
 		User user = mapper.toEntity(request);
 		Role staffRole = roleRepository.findByName("ROLE_STAFF").orElseThrow(() -> new RoleNotFoundException("Role STAFF not found"));

@@ -51,7 +51,7 @@ public class UserController {
 		return ResponseEntity.ok().body(user);
 	}
 
-	@PostMapping("/customers")
+	@PostMapping("/customer")
 	public ResponseEntity<UserResponse> createCustomer(@Valid @RequestBody CreateUserRequest createUserRequest) {
 		UserResponse user = userService.createCustomer(createUserRequest);
 		URI location = URI.create("/api/users/" + user.getId());

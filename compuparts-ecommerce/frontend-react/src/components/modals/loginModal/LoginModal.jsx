@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal, Button, Form, Alert, Spinner, Row, Col } from "react-bootstrap";
 import axios from "axios";
 
-const LoginModal = ({ show, onHide, setLoggedIn }) => {
+const LoginModal = ({ showLogin, onHide, setLoggedIn, setShowRegister }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -15,7 +15,7 @@ const LoginModal = ({ show, onHide, setLoggedIn }) => {
     setError("");
     setLoading(false);
     setShowSuccess(false);
-  }, [show]);
+  }, [showLogin]);
 
   const url = "http://localhost:8080/api/users/login";
 
@@ -54,13 +54,17 @@ const LoginModal = ({ show, onHide, setLoggedIn }) => {
           Successfully Logged In!
         </Alert>
       )}
-      <Modal show={show} onHide={onHide} centered>
+      <Modal show={showLogin} onHide={onHide} centered>
         <Modal.Header closeButton>
           <Modal.Title>Login</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
-          {error && <Alert variant="danger">{error}</Alert>}
+          {error && (
+            <div className="d-flex justify-content-center">
+              <Alert variant="danger">{error}</Alert>
+            </div>
+          )}
 
           <Form onSubmit={handleSubmit}>
             <Form.Group as={Row} className="mb-3" controlId="username">
@@ -119,7 +123,15 @@ const LoginModal = ({ show, onHide, setLoggedIn }) => {
         <Modal.Footer>
           <small className="text-muted">
             Don't have an account?{" "}
-            <a href="/register" className="text-primary">
+            <a
+              href="#"
+              className="text-primary"
+              onClick={(e) => {
+                e.preventDefault();
+                onHide();
+                setShowRegister(true);
+              }}
+            >
               Register Here!
             </a>
           </small>

@@ -272,4 +272,18 @@ public class GlobalExceptionHandler {
 
 		return new ResponseEntity<>(error, error.status());
 	}
+
+	@ExceptionHandler(UsernameAlreadyExistsException.class)
+	public ResponseEntity<ApiError> handleUsernameAlreadyExistsException(UsernameAlreadyExistsException e,
+																		 HttpServletRequest request) {
+		ApiError error = new ApiError(
+				HttpStatus.BAD_REQUEST,
+				e.getMessage(),
+				LocalDateTime.now(),
+				request.getRequestURI(),
+				null
+		);
+
+		return new ResponseEntity<>(error, error.status());
+	}
 }

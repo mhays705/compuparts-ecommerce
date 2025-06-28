@@ -5,3 +5,9 @@ html,
   padding: 0;
   height: 100%;
 }
+.bg-img {
+  background-image: url(./assets/images/bg-img.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100vh;
+}
